@@ -92,8 +92,8 @@ abstract class BaseActivity : AppCompatActivity() {
         @StringRes msg: Int,
         @StringRes positiveText: Int,
         @StringRes negativeText: Int,
-        onPositiveClick: DialogInterface?.(Int) -> Unit,
-        onNegativeClick: DialogInterface?.(Int) -> Unit? = {
+        onPositiveClick: DialogInterface.(Int) -> Unit,
+        onNegativeClick: DialogInterface.(Int) -> Unit? = {
 
         }
     ) {

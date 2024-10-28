@@ -1,6 +1,5 @@
 package com.wrbug.developerhelper.util
 
-import android.content.Context
 import android.os.Environment
 import com.wrbug.developerhelper.commonutil.Constant
 import com.wrbug.developerhelper.commonutil.entity.ApkInfo
@@ -14,7 +13,6 @@ import com.wrbug.developerhelper.model.entity.BackupAppInfo
 import com.wrbug.developerhelper.model.entity.BackupAppItemInfo
 import io.reactivex.rxjava3.core.Single
 import net.dongliu.apk.parser.ApkFile
-import net.dongliu.apk.parser.bean.AdaptiveIcon
 import java.io.File
 
 object BackupUtils {
@@ -131,6 +129,30 @@ object BackupUtils {
             }
             it.onSuccess(list)
         }
+    }
+
+    fun deleteBackupItem(packageName: String, tarFile: String): Single<BackupAppInfo> {
+        return safeCreateSingle {
+            val dir = backupRootDir.listFiles { _, name -> name == packageName }?.getOrNull(0)
+            val backupArch = dir?.let { File(it, tarFile) }
+            if (dir == null || !dir.exists() || backupArch?.exists() != true) {
+                it.onError(Exception())
+                return@safeCreateSingle
+            }
+            backupArch.delete()
+            val configJson = File(dir, CONFIG_JSON)
+            val info = configJson.safeRead().fromJson<BackupAppInfo>()
+            if (info == null) {
+                it.onError(Exception())
+                return@safeCreateSingle
+            }
+            val newInfo = info.copy(
+                backupMap = info.backupMap.apply { remove(tarFile) }
+            )
+            configJson.writeText(newInfo.toJson().orEmpty())
+            it.onSuccess(newInfo)
+        }
+
     }
 
 

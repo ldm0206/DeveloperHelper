@@ -24,7 +24,6 @@ class BackupAppActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initView()
-        loadData()
     }
 
     private fun initView() {
@@ -34,6 +33,11 @@ class BackupAppActivity : BaseActivity() {
         adapter.register(BackupInfoItemDelegate {
             AppBackupDetailActivity.start(this, it)
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadData()
     }
 
     private fun loadData() {

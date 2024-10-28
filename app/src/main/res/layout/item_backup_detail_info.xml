@@ -3,14 +3,80 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg_round_8dp_white"
-    android:padding="16dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="match_parent"
+        android:id="@+id/tv_time"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text=""
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.ItemSecondaryContent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintWidth_percent="0.5"
+        tools:text="2024-10-10 00:00:00" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="2"
+        android:text="备注备注备注备注备注"
+        android:textAppearance="@style/TextAppearance.ItemTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_time" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_version"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:maxLines="1"
+        android:text="10.0.0 (100000)"
+        android:textAppearance="@style/TextAppearance.ItemContent"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_time"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_backup_apk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/item_backup_apk"
+        android:textAppearance="@style/TextAppearance.ItemContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        app:layout_constraintWidth_percent="0.26"
+        tools:textColor="@color/material_color_green_500" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_backup_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/item_backup_data"
+        android:textAppearance="@style/TextAppearance.ItemContent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_backup_android_data"
+        app:layout_constraintStart_toEndOf="@+id/tv_backup_apk"
+        app:layout_constraintTop_toTopOf="@+id/tv_backup_apk"
+        app:layout_constraintWidth_percent="0.3"
+        tools:textColor="@color/material_color_green_500" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_backup_android_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/item_backup_android_data"
+        android:textAppearance="@style/TextAppearance.ItemContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_backup_apk"
+        app:layout_constraintWidth_percent="0.4"
+        tools:textColor="@color/material_color_red_500" />
 </androidx.constraintlayout.widget.ConstraintLayout>
