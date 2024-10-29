@@ -19,6 +19,7 @@ import com.wrbug.developerhelper.databinding.DialogBackupAppSelectBinding
 import com.wrbug.developerhelper.databinding.ViewAppSettingBinding
 import com.wrbug.developerhelper.mmkv.ConfigKv
 import com.wrbug.developerhelper.mmkv.manager.MMKVManager
+import com.wrbug.developerhelper.util.getString
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class AppSettingView : ScrollView {
@@ -81,6 +82,11 @@ class AppSettingView : ScrollView {
             binding.cbAndroidData.setOnCheckedChangeListener { _, isChecked ->
                 selected[2] = isChecked
             }
+            binding.tvMemo.setText(
+                R.string.backup_default_meme.getString(
+                    apkInfo?.getAppName().orEmpty()
+                )
+            )
             AlertDialog.Builder(context)
                 .setTitle(R.string.backup_app_file)
                 .setView(binding.root)
@@ -88,7 +94,7 @@ class AppSettingView : ScrollView {
                 .setPositiveButton(
                     R.string.ok
                 ) { _, _ ->
-                    doBackup(selected)
+                    doBackup(selected, binding.tvMemo.text.toString())
                 }.create().show()
         }
     }
@@ -103,7 +109,7 @@ class AppSettingView : ScrollView {
         disposable.dispose()
     }
 
-    private fun doBackup(selected: BooleanArray) {
+    private fun doBackup(selected: BooleanArray, memo: String) {
         val activity = context as? FragmentActivity ?: return
         if (selected.find { it } == null) {
             return
@@ -111,6 +117,7 @@ class AppSettingView : ScrollView {
         BackupAppDialog.show(
             activity.supportFragmentManager,
             apkInfo,
+            memo,
             selected[0],
             selected[1],
             selected[2]

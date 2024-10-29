@@ -31,7 +31,7 @@ class BackupAppActivity : BaseActivity() {
         binding.rvAppList.adapter = adapter
         binding.rvAppList.addItemDecoration(SpaceItemDecoration.standard)
         adapter.register(BackupInfoItemDelegate {
-            AppBackupDetailActivity.start(this, it)
+            AppBackupDetailActivity.start(this, it.appName, it.packageName)
         })
     }
 

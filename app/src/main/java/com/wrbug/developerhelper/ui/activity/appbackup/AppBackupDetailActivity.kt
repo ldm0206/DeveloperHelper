@@ -1,32 +1,29 @@
 package com.wrbug.developerhelper.ui.activity.appbackup
 
 import android.app.ActionBar.LayoutParams
-import android.app.backup.BackupManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.core.content.IntentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wrbug.developerhelper.R
 import com.wrbug.developerhelper.base.BaseActivity
 import com.wrbug.developerhelper.base.ExtraKey
+import com.wrbug.developerhelper.commonutil.addTo
 import com.wrbug.developerhelper.commonutil.dpInt
 import com.wrbug.developerhelper.databinding.ActivityAppBackupDetailBinding
-import com.wrbug.developerhelper.model.entity.BackupAppData
 import com.wrbug.developerhelper.model.entity.BackupAppItemInfo
 import com.wrbug.developerhelper.ui.adapter.ExMultiTypeAdapter
 import com.wrbug.developerhelper.ui.decoration.SpaceItemDecoration
 import com.wrbug.developerhelper.util.BackupUtils
-import com.wrbug.developerhelper.util.loadImage
 import com.yanzhenjie.recyclerview.SwipeMenuItem
 
 class AppBackupDetailActivity : BaseActivity() {
 
     companion object {
-        fun start(context: Context, info: BackupAppData) {
+        fun start(context: Context, appName: String, packageName: String) {
             context.startActivity(Intent(context, AppBackupDetailActivity::class.java).apply {
-                putExtra(ExtraKey.DATA, info)
+                putExtra(ExtraKey.PACKAGE_NAME, packageName)
+                putExtra(ExtraKey.KEY_1, appName)
             })
         }
     }
@@ -34,8 +31,11 @@ class AppBackupDetailActivity : BaseActivity() {
 
     private val adapter by ExMultiTypeAdapter.get()
 
-    private val info by lazy {
-        IntentCompat.getSerializableExtra(intent, ExtraKey.DATA, BackupAppData::class.java)
+    private val pkgName by lazy {
+        intent?.getStringExtra(ExtraKey.PACKAGE_NAME).orEmpty()
+    }
+    private val appName by lazy {
+        intent?.getStringExtra(ExtraKey.KEY_1).orEmpty()
     }
     private val binding by lazy {
         ActivityAppBackupDetailBinding.inflate(layoutInflater)
@@ -46,14 +46,20 @@ class AppBackupDetailActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initView()
-        loadData(info?.backupMap)
+        loadData()
     }
 
-    private fun loadData(map: Map<String, BackupAppItemInfo>?) {
-        val list = map?.values?.sortedByDescending { it.time } ?: emptyList()
-        listCache.clear()
-        listCache.addAll(list)
-        setupList()
+    private fun loadData() {
+        adapter.showLoading()
+        BackupUtils.getBackupAppInfo(pkgName).subscribe({
+            val list = it.backupMap.values.sortedByDescending { it.time }
+            listCache.clear()
+            listCache.addAll(list)
+            setupList()
+        }, {
+            adapter.showEmpty()
+        }).addTo(disposable)
+
     }
 
     private fun setupList() {
@@ -65,13 +71,13 @@ class AppBackupDetailActivity : BaseActivity() {
     }
 
     private fun initView() {
-        binding.appBar.setSubTitle(info?.appName)
+        binding.appBar.setSubTitle(appName)
         binding.rvAppBackupList.layoutManager = LinearLayoutManager(this)
         binding.rvAppBackupList.addItemDecoration(SpaceItemDecoration.standard)
-        adapter.register(BackupDetailDelegate(info?.appName.orEmpty()))
-        binding.rvAppBackupList.setSwipeMenuCreator { leftMenu, rightMenu, position ->
+        adapter.register(BackupDetailDelegate(appName))
+        binding.rvAppBackupList.setSwipeMenuCreator { _, rightMenu, _ ->
             rightMenu.addMenuItem(SwipeMenuItem(this).apply {
-                text = getString(R.string.item_swipe_menu_meme)
+                text = getString(R.string.item_swipe_menu_restore)
                 width = 56.dpInt()
                 height = LayoutParams.MATCH_PARENT
                 setTextColorResource(R.color.material_text_color_white_text)
@@ -117,7 +123,7 @@ class AppBackupDetailActivity : BaseActivity() {
         backupAppItemInfo ?: return
         BackupUtils.deleteBackupItem(backupAppItemInfo.packageName, backupAppItemInfo.backupFile)
             .subscribe({
-                loadData(it.backupMap)
+                loadData()
             }, {
                 showSnack(getString(R.string.delete_backup_failed_retry))
             })

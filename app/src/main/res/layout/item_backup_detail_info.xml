@@ -16,7 +16,7 @@
         android:textAppearance="@style/TextAppearance.ItemSecondaryContent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.4"
         tools:text="2024-10-10 00:00:00" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:gravity="end"
         android:maxLines="1"
-        android:text="10.0.0 (100000)"
+        android:text="7.8GB | 10.0.0(100000)"
         android:textAppearance="@style/TextAppearance.ItemContent"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"

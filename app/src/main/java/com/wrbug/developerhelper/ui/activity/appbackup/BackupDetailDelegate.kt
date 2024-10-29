@@ -4,12 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import com.wrbug.developerhelper.R
+import com.wrbug.developerhelper.commonutil.byteToShowSize
 import com.wrbug.developerhelper.databinding.ItemBackupDetailInfoBinding
 import com.wrbug.developerhelper.model.entity.BackupAppItemInfo
 import com.wrbug.developerhelper.ui.adapter.delegate.BaseItemViewBindingDelegate
+import com.wrbug.developerhelper.util.BackupUtils
 import com.wrbug.developerhelper.util.format
 import com.wrbug.developerhelper.util.getColor
 import com.wrbug.developerhelper.util.getString
+import java.io.File
 
 class BackupDetailDelegate(private val appName: String) :
     BaseItemViewBindingDelegate<BackupAppItemInfo, ItemBackupDetailInfoBinding>() {
@@ -21,10 +24,15 @@ class BackupDetailDelegate(private val appName: String) :
                 appName
             )
         }
-        binding.tvVersion.text = "${item.versionName}(${item.versionCode})"
+        binding.tvVersion.text = "${getFileSize(item)} | ${item.versionName}(${item.versionCode})"
         binding.tvBackupApk.setStatusColor(item.backupApk)
         binding.tvBackupAndroidData.setStatusColor(item.backupAndroidData)
         binding.tvBackupData.setStatusColor(item.backupData)
+    }
+
+    private fun getFileSize(item: BackupAppItemInfo): String {
+        return File(BackupUtils.getAppBackupDir(item.packageName), item.backupFile).length()
+            .byteToShowSize()
     }
 
     private fun TextView.setStatusColor(enable: Boolean) {

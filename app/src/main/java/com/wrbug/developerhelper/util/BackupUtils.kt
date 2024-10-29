@@ -131,6 +131,19 @@ object BackupUtils {
         }
     }
 
+    fun getBackupAppInfo(packageName: String): Single<BackupAppInfo> {
+        return safeCreateSingle {
+            val dir = backupRootDir.listFiles { _, name -> name == packageName }?.getOrNull(0)
+            val configJson = File(dir, CONFIG_JSON)
+            val info = configJson.safeRead().fromJson<BackupAppInfo>()
+            if (info == null) {
+                it.onError(Exception())
+                return@safeCreateSingle
+            }
+            it.onSuccess(info)
+        }
+    }
+
     fun deleteBackupItem(packageName: String, tarFile: String): Single<BackupAppInfo> {
         return safeCreateSingle {
             val dir = backupRootDir.listFiles { _, name -> name == packageName }?.getOrNull(0)

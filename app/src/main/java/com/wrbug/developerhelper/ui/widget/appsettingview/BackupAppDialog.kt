@@ -32,6 +32,7 @@ class BackupAppDialog : BottomSheetDialogFragment() {
         fun show(
             fragmentManager: FragmentManager,
             apkInfo: ApkInfo?,
+            memo: String,
             backupApk: Boolean,
             backupData: Boolean,
             backupAndroidData: Boolean
@@ -42,6 +43,7 @@ class BackupAppDialog : BottomSheetDialogFragment() {
                     putBoolean(ExtraKey.KEY_1, backupApk)
                     putBoolean(ExtraKey.KEY_2, backupData)
                     putBoolean(ExtraKey.KEY_3, backupAndroidData)
+                    putString(ExtraKey.KEY_4, memo)
                 }
             }.show(fragmentManager, "BackupAppDialog")
         }
@@ -60,6 +62,9 @@ class BackupAppDialog : BottomSheetDialogFragment() {
         arguments?.getBoolean(ExtraKey.KEY_1) ?: false
     }
 
+    private val memo by lazy {
+        arguments?.getString(ExtraKey.KEY_4).orEmpty()
+    }
 
     private val backupData by lazy {
         arguments?.getBoolean(ExtraKey.KEY_2) ?: false
@@ -110,7 +115,8 @@ class BackupAppDialog : BottomSheetDialogFragment() {
                 it.first.packageInfo.versionName.orEmpty(),
                 it.first.packageInfo.versionCodeLong,
                 it.first.packageInfo.packageName.orEmpty(),
-                backupTimeStamp
+                backupTimeStamp,
+                memo = memo
             )
             val success =
                 BackupUtils.saveBackupInfo(it.first, info, it.second.name)

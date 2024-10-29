@@ -2,6 +2,7 @@ package com.wrbug.developerhelper.commonutil
 
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.RoundingMode
 import java.util.regex.Pattern
 
 fun String.isInt(): Boolean {
@@ -68,4 +69,18 @@ fun String?.toDouble(): Double {
         return BigDecimal(this).toDouble()
     }
     return 0.0
+}
+
+fun Long.byteToShowSize(): String {
+    if (this >= Constant.ONE_GB) {
+        return (this.toDouble() / Constant.ONE_GB).toBigDecimal()
+            .setScale(2, RoundingMode.HALF_DOWN).toPlainString() + " GB"
+    }
+    if (this >= Constant.ONE_MB) {
+        return (this.toDouble() / Constant.ONE_MB).toBigDecimal()
+            .setScale(2, RoundingMode.HALF_DOWN).toPlainString() + " MB"
+    }
+    return (this.toDouble() / Constant.ONE_KB).toBigDecimal()
+        .setScale(2, RoundingMode.HALF_DOWN).toPlainString() + " KB"
+
 }

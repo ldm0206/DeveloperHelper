@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textAppearance="@style/TextAppearance.ItemContent"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tv_app_name"
         app:layout_constraintTop_toBottomOf="@id/tv_app_package_name"
         tools:text="@string/app_info_backup_count" />
@@ -56,6 +57,7 @@
         android:layout_marginStart="8dp"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.ItemContent"
+        android:textSize="12sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_backup_count"
