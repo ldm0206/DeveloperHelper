@@ -3,6 +3,7 @@ package com.wrbug.developerhelper.ui.activity.appbackup
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.wrbug.developerhelper.R
+import com.wrbug.developerhelper.commonutil.AppInfoManager
 import com.wrbug.developerhelper.commonutil.SpannableBuilder
 import com.wrbug.developerhelper.commonutil.byteToShowSize
 import com.wrbug.developerhelper.databinding.ItemBackupAppInfoBinding
@@ -10,6 +11,7 @@ import com.wrbug.developerhelper.model.entity.BackupAppData
 import com.wrbug.developerhelper.ui.adapter.delegate.BaseItemViewBindingDelegate
 import com.wrbug.developerhelper.util.BackupUtils
 import com.wrbug.developerhelper.util.format
+import com.wrbug.developerhelper.util.getColor
 import com.wrbug.developerhelper.util.getString
 import com.wrbug.developerhelper.util.loadImage
 import com.wrbug.developerhelper.util.setOnDoubleCheckClickListener
@@ -18,7 +20,17 @@ import java.io.File
 class BackupInfoItemDelegate(private val listener: (BackupAppData) -> Unit) :
     BaseItemViewBindingDelegate<BackupAppData, ItemBackupAppInfoBinding>() {
     override fun onBindViewHolder(binding: ItemBackupAppInfoBinding, item: BackupAppData) {
-        binding.tvAppName.text = item.appName
+        val isSystemApp =
+            AppInfoManager.getAppByPackageName(item.packageName)?.isSystemApp() == true
+        val title = if (isSystemApp) {
+            val tag = R.string.backup_system_app_tag.getString()
+            SpannableBuilder.with(binding.root.context, tag + " " + item.appName)
+                .addSpanWithColor(tag, R.color.colorAccent.getColor()).build()
+        } else {
+            item.appName
+        }
+
+        binding.tvAppName.text = title
         binding.tvAppPackageName.text = item.packageName
         val size = item.backupMap.size
         val fileSize = item.backupMap.values.sumOf {

@@ -29,7 +29,6 @@ object AppInfoManager {
             return appMap[packageName]
         }
         appMap.putAll(getAllApps())
-
         return appMap[packageName]
     }
 

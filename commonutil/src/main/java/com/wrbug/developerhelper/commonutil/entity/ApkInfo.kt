@@ -24,6 +24,10 @@ class ApkInfo(
         return label.toString()
     }
 
+    fun isSystemApp(): Boolean {
+        return applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 1
+    }
+
     fun generateBackupApkFileName(): String {
         return packageInfo.versionName + ".apk"
     }
