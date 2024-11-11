@@ -20,9 +20,12 @@ import java.io.File
 class BackupInfoItemDelegate(private val listener: (BackupAppData) -> Unit) :
     BaseItemViewBindingDelegate<BackupAppData, ItemBackupAppInfoBinding>() {
     override fun onBindViewHolder(binding: ItemBackupAppInfoBinding, item: BackupAppData) {
-        val isSystemApp =
-            AppInfoManager.getAppByPackageName(item.packageName)?.isSystemApp() == true
-        val title = if (isSystemApp) {
+        val appInfo = AppInfoManager.getAppByPackageName(item.packageName)
+        val title = if (appInfo == null) {
+            val tag = R.string.backup_uninstalled_app_tag.getString()
+            SpannableBuilder.with(binding.root.context, tag + " " + item.appName)
+                .addSpanWithColor(tag, R.color.material_color_red_600.getColor()).build()
+        } else if (appInfo.isSystemApp()) {
             val tag = R.string.backup_system_app_tag.getString()
             SpannableBuilder.with(binding.root.context, tag + " " + item.appName)
                 .addSpanWithColor(tag, R.color.colorAccent.getColor()).build()

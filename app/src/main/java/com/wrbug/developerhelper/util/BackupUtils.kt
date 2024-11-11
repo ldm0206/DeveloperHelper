@@ -124,6 +124,10 @@ object BackupUtils {
                 }
                 val info = configJson.safeRead().fromJson<BackupAppInfo>() ?: return@forEach
                 val map = info.backupMap.filter { File(root, it.key).exists() }
+                if (map.isEmpty()) {
+                    configJson.delete()
+                    return@forEach
+                }
                 val icoFile = File(root, ICON_PNG).takeIf { it.exists() }
                 list.add(BackupAppData(info.appName, info.packageName, root, HashMap(map), icoFile))
             }

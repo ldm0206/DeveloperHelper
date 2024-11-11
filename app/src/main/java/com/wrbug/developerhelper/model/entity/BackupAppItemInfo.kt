@@ -31,8 +31,4 @@ data class BackupAppItemInfo(
     var androidDataFile: String = "",
     @SerializedName("memo")
     var memo: String = ""
-) : Parcelable, Serializable {
-    companion object {
-        val EMPTY = BackupAppItemInfo()
-    }
-}
+) : Parcelable, Serializable

@@ -95,7 +95,7 @@ class AppBackupDetailActivity : BaseActivity() {
             menuBridge.closeMenu()
             when (menuBridge.position) {
                 0 -> {
-
+                    recover(adapter.items[adapterPosition] as? BackupAppItemInfo)
                 }
 
                 1 -> {
@@ -117,6 +117,11 @@ class AppBackupDetailActivity : BaseActivity() {
             }
         }
         binding.rvAppBackupList.adapter = adapter
+    }
+
+    private fun recover(backupAppItemInfo: BackupAppItemInfo?) {
+        backupAppItemInfo ?: return
+
     }
 
     private fun deleteBackup(backupAppItemInfo: BackupAppItemInfo?) {

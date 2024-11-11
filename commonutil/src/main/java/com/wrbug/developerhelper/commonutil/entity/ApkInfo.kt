@@ -3,7 +3,6 @@ package com.wrbug.developerhelper.commonutil.entity
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.graphics.drawable.Drawable
-import android.os.Parcel
 import android.os.Parcelable
 import com.wrbug.developerhelper.commonutil.CommonUtils
 import kotlinx.parcelize.Parcelize

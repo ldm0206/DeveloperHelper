@@ -76,6 +76,10 @@
             android:name=".ui.activity.appbackup.AppBackupDetailActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.activity.appbackup.AppRecoverActivity"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.wrbug.developerhelper.fileprovider"
