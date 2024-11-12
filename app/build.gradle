@@ -9,6 +9,18 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+    signingConfigs {
+        if (signingProp.exists()) {
+            def properties = new Properties()
+            properties.load(new FileInputStream(signingProp))
+            create("key") {
+                storeFile = rootProject.file(properties.getProperty("keystore.path"))
+                storePassword = properties.getProperty("keystore.pwd")
+                keyAlias = properties.getProperty("keystore.alias")
+                keyPassword = properties.getProperty("keystore.alias_pwd")
+            }
+        }
+    }
     if (isSignFileValid()) {
         signingConfigs {
             releaseConfig
