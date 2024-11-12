@@ -3,12 +3,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'//kapt 插件
 apply from: "${rootDir}/common.gradle"
+
+def signingProp = file(project.rootProject.file("signing.properties"))
+
 android {
-    namespace "com.wrbug.developerhelper"
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
     signingConfigs {
         if (signingProp.exists()) {
             def properties = new Properties()
@@ -20,6 +18,11 @@ android {
                 keyPassword = properties.getProperty("keystore.alias_pwd")
             }
         }
+    }
+    namespace "com.wrbug.developerhelper"
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
     if (isSignFileValid()) {
         signingConfigs {
