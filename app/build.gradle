@@ -17,6 +17,8 @@ android {
                 keyAlias = properties.getProperty("keystore.alias")
                 keyPassword = properties.getProperty("keystore.alias_pwd")
             }
+        }else if (isSignFileValid()) {
+                releaseConfig
         }
     }
     namespace "com.wrbug.developerhelper"
@@ -24,11 +26,7 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-    if (isSignFileValid()) {
-        signingConfigs {
-            releaseConfig
-        }
-    }
+    
     compileSdk 34
     defaultConfig {
         applicationId "com.wrbug.developerhelper"
@@ -44,12 +42,14 @@ android {
     buildTypes {
         debug {
             versionNameSuffix "-debug"
-            if (isSignFileValid()) {
+            if (signingProp.exists()) signingConfig = signingConfigs.getByName("key")
+            else if (isSignFileValid()) {
                 signingConfig signingConfigs.releaseConfig
             }
         }
         release {
             minifyEnabled false
+            if (signingProp.exists()) signingConfig = signingConfigs.getByName("key")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
