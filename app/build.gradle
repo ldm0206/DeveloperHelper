@@ -93,5 +93,5 @@ if (propFile.canRead()) {
 }
 
 def isSignFileValid() {
-    return file('../signing.properties').canRead()
+    return file('signing.properties').canRead()
 }
