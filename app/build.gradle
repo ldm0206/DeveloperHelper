@@ -1,18 +1,32 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'//kapt 插件
 apply from: "${rootDir}/common.gradle"
+
+def signingProp = file(project.rootProject.file("signing.properties"))
+
+
 android {
+    signingConfigs {
+        if (signingProp.exists()) {
+            def properties = new Properties()
+            properties.load(new FileInputStream(signingProp))
+            create("key") {
+                storeFile = rootProject.file(properties.getProperty("keystore.path"))
+                storePassword = properties.getProperty("keystore.pwd")
+                keyAlias = properties.getProperty("keystore.alias")
+                keyPassword = properties.getProperty("keystore.alias_pwd")
+            }
+        }
+    }
     namespace "com.wrbug.developerhelper"
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
-    }
-    if (isSignFileValid()) {
-        signingConfigs {
-            releaseConfig
-        }
     }
     compileSdk 34
     defaultConfig {
@@ -29,12 +43,11 @@ android {
     buildTypes {
         debug {
             versionNameSuffix "-debug"
-            if (isSignFileValid()) {
-                signingConfig signingConfigs.releaseConfig
-            }
+            if (signingProp.exists()) signingConfig = signingConfigs.getByName("key")
         }
         release {
             minifyEnabled false
+            if (signingProp.exists()) signingConfig = signingConfigs.getByName("key")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -69,29 +82,4 @@ dependencies {
 }
 kapt {
     generateStubs = true
-}
-
-
-Properties props = new Properties()
-def propFile = file('../signing.properties')
-if (propFile.canRead()) {
-    props.load(new FileInputStream(propFile))
-    if (props != null &&
-            props.containsKey('SIGN_FILE') && props.containsKey('SIGN_PASSWORD') &&
-            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
-        android.signingConfigs.releaseConfig.storeFile = file(props['SIGN_FILE'])
-        android.signingConfigs.releaseConfig.storePassword = props['SIGN_PASSWORD']
-        android.signingConfigs.releaseConfig.keyAlias = props['KEY_ALIAS']
-        android.signingConfigs.releaseConfig.keyPassword = props['KEY_PASSWORD']
-    } else {
-        println 'release build not found signing properties'
-        android.buildTypes.release.signingConfig = null
-    }
-} else {
-    println 'release build not found signing file'
-    android.buildTypes.release.signingConfig = null
-}
-
-def isSignFileValid() {
-    return file('../signing.properties').canRead()
 }
